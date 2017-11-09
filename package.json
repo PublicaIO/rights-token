@@ -1,0 +1,29 @@
+{
+  "name": "publica-rights-token",
+  "version": "1.0.0",
+  "description": "A concept of RightsToken (visit Publica.IO for details)",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "truffle": "^4.0.1",
+    "zeppelin-solidity": "^1.3.0"
+  },
+  "devDependencies": {
+    "ethereumjs-testrpc": "^6.0.1"
+  },
+  "scripts": {
+    "test": "turffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PublicaIO/rights-token.git"
+  },
+  "author": "Yuri Pimenov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PublicaIO/rights-token/issues"
+  },
+  "homepage": "https://github.com/PublicaIO/rights-token#readme"
+}
