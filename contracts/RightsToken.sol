@@ -1,9 +1,10 @@
 pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/token/StandardToken.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './PebbleToken.sol';
 
-contract RightsToken is StandardToken {
+contract RightsToken is StandardToken, Ownable {
     uint256 public TOTAL_SHARES = 1000000; // total shares: perhaps should be user-defined, but not for now
     string public name = "";
     address public author = 0x0;
@@ -15,13 +16,19 @@ contract RightsToken is StandardToken {
     mapping (address => uint256) public lastTotalDividends;
     mapping (address => mapping (address => uint256)) public allowed;
 
-    function RightsToken(string _name, address _author, PebbleToken _pebbles) public {
-        name = _name;
-        author = _author;
+    function RightsToken(PebbleToken _pebbles) public {
         pebbles = _pebbles;
 
         totalSupply = TOTAL_SHARES;
         balances[author] = TOTAL_SHARES;
+    }
+
+    function setAuthor(address _author) public onlyOwner {
+        author = _author;
+    }
+
+    function setName(string _name) public onlyOwner {
+        name = _name;
     }
 
     function withdrawTo(address _owner) internal { // remainders -- let remain
@@ -39,7 +46,8 @@ contract RightsToken is StandardToken {
         Withdrawal(_owner, dividends);
     }
 
-    /**@dev Invest PBLs and gain some shares for the sender themself or for someone else
+    /**
+     * @dev Invest PBLs and gain some shares for the sender themself or for someone else
      * @param _recipient Address of the beneficiary
      * @return Purchased shares
      */
@@ -75,14 +83,16 @@ contract RightsToken is StandardToken {
         return shares;
     }
 
-    /**@dev Invest PBLs and gain some shares for the sender
+    /**
+     * @dev Invest PBLs and gain some shares for the sender
      * @return Purchased shares
      */
     function buy() public returns (uint256 purchasedShares) {
         return buyFor(msg.sender);
     }
 
-    /**@dev Invest PBLs and gain some shares for the sender themself or for someone else; additionally check that sharePrice hasn't grown
+    /**
+     * @dev Invest PBLs and gain some shares for the sender themself or for someone else; additionally check that sharePrice hasn't grown
      * @return Purchased shares
      */
     function safeBuyFor(address _recipient, uint256 _sharePriceLimit) public returns (uint256 purchasedShares) {
@@ -90,7 +100,8 @@ contract RightsToken is StandardToken {
         return buyFor(_recipient);
     }
 
-    /**@dev Invest PBLs and gain some shares for the sender; additionally check that sharePrice hasn't grown beyond the given limit
+    /**
+     * @dev Invest PBLs and gain some shares for the sender; additionally check that sharePrice hasn't grown beyond the given limit
      * @return Purchased shares
      */
     function safeBuy(uint256 _sharePriceLimit) public returns (uint256 purchasedShares) {
@@ -98,7 +109,8 @@ contract RightsToken is StandardToken {
         return buyFor(msg.sender);
     }
 
-    /**@dev Pay author's PBL dividents to all investors
+    /**
+     * @dev Pay author's PBL dividents to all investors
      */
     function pay() public {
         require(msg.sender == author);
@@ -113,7 +125,8 @@ contract RightsToken is StandardToken {
         Payment(cents);
     }
 
-    /**@dev Withdraw investor's PBL dividends accumulated up to now
+    /**
+     * @dev Withdraw investor's PBL dividends accumulated up to now
      * @return Withdrawn PBL cents
      */
     function withdraw() public returns (uint256 withdrawnCents) {

@@ -1,6 +1,5 @@
 pragma solidity ^0.4.18;
 
-import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 import './PebbleToken.sol';
 import './RightsToken.sol';
 
@@ -11,11 +10,12 @@ contract SafeRightsToken is RightsToken {
     mapping (address => bool) public withdrawable;
     mapping (address => uint256) public claimable;
 
-    function SafeRightsToken(string _name, address _author, PebbleToken _pebbles) public RightsToken(_name, _author, _pebbles) {
+    function SafeRightsToken(PebbleToken _pebbles) public RightsToken(_pebbles) {
         return;
     }
 
-    /**@dev Declare oneself as a beneficiary -- should be called by any rational human
+    /**
+     * @dev Declare oneself as a beneficiary -- should be called by any rational human
      * @param _withdrawable Whether msg.sender wants to get dividends
      */
     function setWithdrawable(bool _withdrawable) public {
@@ -48,7 +48,8 @@ contract SafeRightsToken is RightsToken {
         }
     }
 
-    /**@dev Transfer proportion of claims from a sender to a recipient after transfering _value shares
+    /**
+     * @dev Transfer proportion of claims from a sender to a recipient after transfering _value shares
      * @param _from Sender
      * @param _to Recipient
      * @param _value Shares that was just transfered
